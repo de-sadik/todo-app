@@ -5,37 +5,22 @@ module.exports = {
     jest: true,
   },
   extends: [
-    'eslint:recommended',
-    'airbnb-base',
-    'airbnb-typescript/base',
-    'plugin:@typescript-eslint/recommended',
-    'plugin:eslint-comments/recommended',
-    'plugin:jest/recommended',
-    'plugin:promise/recommended',
-    'plugin:prettier/recommended',
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "airbnb-base",
+    "plugin:prettier/recommended",
+    "plugin:import/typescript",
   ],
-  parser: '@typescript-eslint/parser',
+  parser: "@typescript-eslint/parser",
   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
+    ecmaVersion: "latest",
+    sourceType: "module",
   },
-  plugins: [
-    '@typescript-eslint',
-    'prettier',
-    'import', 
-  ],
+  plugins: ["@typescript-eslint", "prettier"],
   rules: {
-    'prettier/prettier': 'error',
-    'import/prefer-default-export': 'off',
-    'import/no-default-export': 'error',
-
+    "prettier/prettier": "error",
+    "import/prefer-default-export": "off",
+    "import/no-default-export": "error",
   },
-  settings: {
-    "import/resolver": {
-        typescript: {
-            alwaysTryTypes: true,
-            project: './tsconfig.json',
-        }
-    }
-},
+  
 };
