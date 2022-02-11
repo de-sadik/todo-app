@@ -1,10 +1,11 @@
 import { Request, Response } from "express";
-import { CreateTodo, OneTodoSchema, UpdateTodoSchema } from "../schema/todo.schema";
+import { CreateTodo, GetTodosSchema, OneTodoSchema, UpdateTodoSchema } from "../schema/todo.schema";
 import TodoService from "../services/todo.service";
 import _ from "lodash";
 import moment from "moment";
-import 'moment-timezone'
-
+import 'moment-timezone';
+import { convertDueDate } from "../utils/todo";
+import { timeNow } from "../utils/currentTime";
 
 export async function getTodo(req: Request<OneTodoSchema['params']>, res: Response) {
   const todoService = new TodoService()
@@ -23,7 +24,7 @@ export async function createTodo(
 ) {
   const payload = {
       ...req.body,
-      dueDate: moment.utc(req.body.dueDate+ " "+req.body.dueTime).toDate(),
+      dueDate: moment.utc(new Date(req.body.dueDate+ " "+req.body.dueTime),'YYYY-MM-DD H:m:s').toDate(),
       dueTime: moment(req.body.dueTime,"HH:mm:ss").format("LT"),
   }
   try {
@@ -35,10 +36,18 @@ export async function createTodo(
   }
 }
 
-export async function getTodos(req: Request, res: Response) {
+export async function getTodos(req: Request<GetTodosSchema['params']>, res: Response) {
     const todoService:TodoService = new TodoService()
-    try {
-        const todos = await todoService.getAll()
+    try { 
+        
+        if (req.params.area && req.params.location){
+        const currentTime = await timeNow(`${req.params.area}/${req.params.location}`)  
+        let todos = await todoService.getAll(currentTime)
+        // console.log(``)
+        todos = await convertDueDate(`${req.params.area}/${req.params.location}`,todos)
+        return res.send(todos)
+        }
+        let todos = await todoService.getAll()
         return res.send(todos)
     }
     catch(e){
@@ -49,7 +58,7 @@ export async function updateTodo(req: Request<UpdateTodoSchema['params']>, res: 
   const id = Number(req.params.todoId)
   const todoService = new TodoService()
   try{
-    const todo = todoService.update(id,req.body)
+    const todo = await todoService.update(id,req.body)
     res.status(201).send(todo)
   }
   catch(e){

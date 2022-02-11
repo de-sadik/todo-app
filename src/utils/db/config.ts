@@ -8,6 +8,11 @@ const dbUser = config.get<string>("dbUser");
 const sequelizeConnection = new Sequelize(dbName, dbUser, dbPassword, {
   host: dbHost,
   dialect: "postgres",
+  dialectOptions:{
+    useUTC: true
+  },
+  timezone: '+02.00',
+  logging: false,
 });
 
 export default sequelizeConnection;

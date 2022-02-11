@@ -6,7 +6,8 @@ import { createTodoSchema, getTodosSchema, oneTodoSchema, updateTodoSchema } fro
 function routes(app: Express) {
   app.get("/healthcheck", (req: Request, res: Response) => res.sendStatus(200));
   
-  app.get("/todo/:area?/:location?",validate(getTodosSchema),getTodos);
+  app.get("/todo/:area/:location",validate(getTodosSchema),getTodos);
+  app.get("/todo/",getTodos);
   app.post("/todo", validate(createTodoSchema),createTodo);
   app.get("/todo/:todoId",validate(oneTodoSchema),getTodo)
   app.put("/todo/:todoId",validate(updateTodoSchema),updateTodo)

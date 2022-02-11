@@ -26,7 +26,7 @@ const payload = object({
 }).strict();
 
 const params = object({
-  todoId: number({
+  todoId: string({
     required_error: "postId is required",
   }),
 });
@@ -41,8 +41,12 @@ export const oneTodoSchema = object({
 
 export const getTodosSchema = object({
   params: object({
-   area: string().optional(),
-   location: string().optional(),
+   area: string({
+     required_error: "area required in params"
+   } ),
+   location: string({
+     required_error: "location required in params"
+   }),
   }).strict(),
 })
 
