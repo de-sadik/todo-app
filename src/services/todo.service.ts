@@ -19,8 +19,8 @@ export default class TodoService {
       if(!todo){
           throw new Error(`not found`)
       }
-      // const updatedTodo = await todo.update(payload)
-      return todo;
+      const updatedTodo = await todo.update(payload)
+      return updatedTodo;
   }
   async getById (id:number): Promise<TodoOutput> {
       const todo = await Todo.findByPk(id)

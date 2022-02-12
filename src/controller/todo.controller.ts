@@ -5,7 +5,7 @@ import _ from "lodash";
 import moment from "moment";
 import 'moment-timezone';
 import { convertDueDate } from "../utils/todo";
-import { timeNow } from "../utils/currentTime";
+import WorldTimeAPI from "../utils/currentTime";
 
 export async function getTodo(req: Request<OneTodoSchema['params']>, res: Response) {
   const todoService = new TodoService()
@@ -14,7 +14,7 @@ export async function getTodo(req: Request<OneTodoSchema['params']>, res: Respon
     const todo = await  todoService.getById(id)
     res.send(todo);
   }catch (e) {
-    res.status(400).end();
+    res.status(400).send({id:`${id} not found`}).end();
   }
 }
 
@@ -30,7 +30,7 @@ export async function createTodo(
   try {
     const todoService: TodoService = new TodoService();
     const todo = await todoService.create(payload);
-    return res.send(todo);
+    return res.status(201).send(todo);
   } catch (e) {
     res.status(400).end();
   }
@@ -41,7 +41,8 @@ export async function getTodos(req: Request<GetTodosSchema['params']>, res: Resp
     try { 
         
         if (req.params.area && req.params.location){
-        const currentTime = await timeNow(`${req.params.area}/${req.params.location}`)  
+        const wordTimeAPI = new WorldTimeAPI() 
+        const currentTime = await wordTimeAPI.timeNow(`${req.params.area}/${req.params.location}`)  
         let todos = await todoService.getAll(currentTime)
         // console.log(``)
         todos = await convertDueDate(`${req.params.area}/${req.params.location}`,todos)
@@ -59,10 +60,10 @@ export async function updateTodo(req: Request<UpdateTodoSchema['params']>, res: 
   const todoService = new TodoService()
   try{
     const todo = await todoService.update(id,req.body)
-    res.status(201).send(todo)
+    res.status(200).send(todo)
   }
   catch(e){
-    res.status(400)
+    res.status(400).end()
   }
 }
 
@@ -70,7 +71,7 @@ export async function deleteTodo(req: Request<OneTodoSchema['params']>, res: Res
   const id = Number(req.params.todoId)
   const todoService = new TodoService()
   const result = await todoService.deleteById(id)
-  res.status(203).send({
+  res.status(200).send({
     sucess: result
   })
 }

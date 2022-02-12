@@ -1,6 +1,6 @@
 import * as http from "http";
 import moment from "moment";
-export interface ResponseData {
+export interface WorldtimeapiResponse {
   abbreviation: string;
   client_ip: string;
   datetime: string;
@@ -17,28 +17,29 @@ export interface ResponseData {
   utc_offset: string;
   week_number: number;
 }
-
-async function getTime(timezone: string): Promise<ResponseData> {
-  return new Promise<ResponseData>((resolve, reject) => {
-    http
-      .get(`http://worldtimeapi.org/api/timezone/${timezone}`, (resp) => {
-        let data: string = "";
-        resp.on("data", (chunk) => {
-          data += chunk;
+export default class WorldTimeAPI {
+  constructor() {}
+  async getTime(timezone: string): Promise<WorldtimeapiResponse> {
+    return new Promise<WorldtimeapiResponse>((resolve, reject) => {
+      http
+        .get(`http://worldtimeapi.org/api/timezone/${timezone}`, (resp) => {
+          let data: string = "";
+          resp.on("data", (chunk) => {
+            data += chunk;
+          });
+          resp.on("end", () => {
+            resolve(JSON.parse(data));
+          });
+        })
+        .on("error", (err) => {
+          reject(new Error("failed"));
         });
-
-        resp.on("end", () => {
-          resolve(JSON.parse(data));
-        });
-      })
-      .on("error", (err) => {
-        reject(new Error("failed"));
-      });
-  });
+    });
+  }
+  async timeNow(timezone: string): Promise<string> {
+    const res = await this.getTime(timezone);
+    return res.utc_datetime;
+  }
 }
-export async function timeNow(timezone:string): Promise<string>{
-      const res = await getTime(timezone)
-    //   return moment(res.utc_datetime).toDate()
-    return res.utc_datetime
 
-} 
+export { WorldTimeAPI };

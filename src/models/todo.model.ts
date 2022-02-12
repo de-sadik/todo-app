@@ -1,7 +1,7 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import sequelizeConnection from "../utils/db/config";
 
-interface TodoAttributes {
+export interface TodoAttributes {
   id: number;
   title: string;
   description: string;
@@ -33,7 +33,7 @@ class Todo
 Todo.init(
   {
     id: {
-      type: DataTypes.INTEGER.UNSIGNED,
+      type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
     },
