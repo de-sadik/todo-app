@@ -1,0 +1,32 @@
+version: '3.7'
+services:
+  db:
+    image: postgres
+    environment: 
+      POSTGRES_PASSORD: admin
+      POSTGRES_USER: postgres
+      POSTGRES_DB: todo-db
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    ports:
+      - "5423:5432"
+  app:
+    environment:
+      - PORT=3000
+      - DB_HOST='localhost'
+      - DB_NAME='todo-db'
+      - DB_USER='postgres'
+      - DB_PASSWORD='admin'
+      - INFO_LOG_FIlE_Name='./info.log'
+      - ERROR_LOG_FIlE_Name='./error.log'
+    container_name: todo-app
+    build: 
+      dockerfile: Dockerfile
+    image: todo-api-image
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+
+    
+
