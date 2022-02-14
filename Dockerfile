@@ -12,4 +12,5 @@ RUN npm install --production
 
 COPY --from=build /usr/app/dist ./dist
 COPY .env .
-CMD node dist/index.js 
+COPY ./config ./config
+CMD node -r dotenv/config dist/index.js
