@@ -9,7 +9,7 @@
     "dev": "ts-node-dev -r dotenv/config --respawn --transpile-only src/index.ts",
     "prod": "node -r dotenv/config dist/index.js",
     "build": "tsc -p tsconfig.prod.json",
-    "test": "jest --forceExit "
+    "test": "jest --forceExit --silent"
   },
   "devDependencies": {
     "@types/body-parser": "^1.19.2",
